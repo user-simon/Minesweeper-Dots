@@ -4,10 +4,11 @@ typedef unsigned int UINT;
 
 static UINT get_random(UINT max)
 {
-	static std::default_random_engine generator(std::time(NULL));
-	static std::uniform_int_distribution<UINT> distribution;
+	static std::random_device rd;
+	static std::mt19937 gen = std::mt19937(rd());
+	static std::uniform_int_distribution<UINT> dist;
 
-	return distribution(generator) % max;
+	return dist(gen) % max;
 }
 
 template<typename T>
@@ -23,9 +24,11 @@ struct vec2_t
 {
 	T x, y;
 
-	static const vec2_t<T> zero;
+	static const vec2_t<T> ZERO;
 
-	constexpr vec2_t(T x = 0, T y = 0) : x(x), y(y) {}
+	constexpr vec2_t(T x, T y) : x(x), y(y) {}
+	constexpr vec2_t() : vec2_t(0, 0) {}
+	constexpr vec2_t(T v) : vec2_t(v, v) {}
 
 	vec2_t<T> abs()
 	{
@@ -64,7 +67,7 @@ namespace std
 }
 
 template<typename T>
-const vec2_t<T> vec2_t<T>::zero = { 0, 0 };
+const vec2_t<T> vec2_t<T>::ZERO = { 0, 0 };
 
 template<>
 vec2_t<UINT> vec2_t<UINT>::abs()

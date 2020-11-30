@@ -12,7 +12,7 @@ void grid::init(difficulty_t* difficulty)
 	for (UINT i = 0; i < m_difficulty->cell_count; i++)
   		m_cells.emplace_back(std::make_unique<cell>(VEC2U(i % m_difficulty->size.x, i / m_difficulty->size.x)));
 	
-	// get neighbours
+	// set neighbours
 
 	for (std::unique_ptr<cell>& c : m_cells)
 	{
@@ -83,10 +83,10 @@ void grid::reposition_mines(cell* clicked)
 	}
 }
 
-void grid::on_draw(sf::RenderTarget* ctx, UINT game_state, cell* hovered_cell)
+void grid::on_draw(UINT game_state, cell* hovered_cell, sf::RenderTarget* ctx)
 {
 	for (std::unique_ptr<cell>& c : m_cells)
-		c->on_draw(ctx, game_state, c.get() == hovered_cell);
+		c->on_draw(game_state, c.get() == hovered_cell, ctx);
 }
 
 cell* grid::get_cell(VEC2U pos)

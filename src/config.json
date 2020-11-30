@@ -1,28 +1,28 @@
 {
-    "default": 1,
+    "default": 0,
     "difficulties": [
         {
-            "high-score": -1,
             "mines": 10,
             "name": "Beginner",
+            "record": -1,
             "size": [
                 9,
                 9
             ]
         },
         {
-            "high-score": -1,
             "mines": 40,
             "name": "Intermediate",
+            "record": -1,
             "size": [
                 16,
                 16
             ]
         },
         {
-            "high-score": -1,
             "mines": 99,
             "name": "Expert",
+            "record": -1,
             "size": [
                 30,
                 16

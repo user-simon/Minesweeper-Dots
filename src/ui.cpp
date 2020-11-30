@@ -7,10 +7,24 @@ ui::ui(VEC2U& client_size)
 	m_client_size = &client_size;
 }
 
+std::string ui::_format_counter(int num)
+{
+	std::stringstream stream;
+	stream << std::setfill('0');
+
+	if (num < 0)
+		stream << "-" << std::setw(2) << -num;
+	else
+		stream << std::setw(3) << num;
+
+	return stream.str();
+}
+
 void ui::_draw_text(std::string_view string, VEC2U pos, UINT size, std::string_view font, text_align_t align, sf::RenderTarget* ctx)
 {
 	sf::Text text = sf::Text(std::string(string), _font(font), size);
-	
+	text.setFillColor(colors::TEXT);
+
 	switch (align)
 	{
 	case ALIGN_CENTER:
@@ -24,25 +38,26 @@ void ui::_draw_text(std::string_view string, VEC2U pos, UINT size, std::string_v
 	ctx->draw(text);
 }
 
+void ui::_draw_rect(VEC2U pos, VEC2U size, sf::Color color, sf::RenderTarget* ctx)
+{
+	sf::RectangleShape rect(size);
+	rect.setPosition(pos);
+	rect.setFillColor(color);
+
+	ctx->draw(rect);
+}
+
 void ui::_draw_counter(int num, text_align_t side, sf::RenderTarget* ctx)
 {
-	std::stringstream stream;
-	stream << std::setfill('0');
-
-	if (num < 0)
-		stream << "-" << std::setw(2) << -num;
-	else
-		stream << std::setw(3) << num;
-	
 	static const sf::Font&		FONT		 = _font("slkscr.ttf");
-	static const sf::FloatRect& GLYPH_BOUNDS = FONT.getGlyph('0', TEXT_SIZE, false).bounds;
-	static const sf::Texture&	FONT_TEXTURE = FONT.getTexture(TEXT_SIZE);
+	static const sf::FloatRect& GLYPH_BOUNDS = FONT.getGlyph('0', COUNTER_SIZE, false).bounds;
+	static const sf::Texture&	FONT_TEXTURE = FONT.getTexture(COUNTER_SIZE);
 
 	static const UINT GLYPH_WIDTH  = GLYPH_BOUNDS.width + 10;
 	static const UINT GLYPH_HEIGHT = GLYPH_BOUNDS.height;
 	
 	VEC2U pos;
-	const		 UINT OFFSET_X = m_client_size->x * INSET_K;
+	const		 UINT OFFSET_X = m_client_size->x * COUNTER_INSET_K;
 	const static UINT OFFSET_Y = PANEL_HEIGHT / 2 - GLYPH_HEIGHT / 2;
 
 	if (side == ALIGN_LEFT)
@@ -51,12 +66,12 @@ void ui::_draw_counter(int num, text_align_t side, sf::RenderTarget* ctx)
 		pos = VEC2U(m_client_size->x - OFFSET_X - GLYPH_WIDTH * 3, OFFSET_Y);
 	
 	// custom font renderer to draw font monospaced
-	
-	std::string string = stream.str();
+
+	std::string string = _format_counter(num);
 
 	for (UINT i = 0; i < 3; i++)
 	{
-		const sf::Glyph glyph = FONT.getGlyph(string[i], TEXT_SIZE, false);
+		const sf::Glyph glyph = FONT.getGlyph(string[i], COUNTER_SIZE, false);
 
 		sf::Sprite sprite(FONT_TEXTURE, glyph.textureRect);
 		sprite.setPosition(pos);
@@ -65,15 +80,6 @@ void ui::_draw_counter(int num, text_align_t side, sf::RenderTarget* ctx)
 		
 		ctx->draw(sprite);
 	}
-}
-
-void ui::_draw_rect(VEC2U pos, VEC2U size, sf::Color color, sf::RenderTarget* ctx)
-{
-	sf::RectangleShape rect(size);
-	rect.setPosition(pos);
-	rect.setFillColor(color);
-
-	ctx->draw(rect);
 }
 
 sf::Font& ui::_font(std::string_view name)
@@ -87,9 +93,19 @@ sf::Font& ui::_font(std::string_view name)
 	return m_fonts[name];
 }
 
-void ui::on_draw(UINT time, int flags, difficulty_t& difficulty, sf::RenderTarget* ctx)
+void ui::on_draw(UINT time, int flags, UINT game_state, sf::RenderTarget* ctx)
 {
-	_draw_rect(VEC2U::zero, VEC2U(m_client_size->x, PANEL_HEIGHT), colors::BODY, ctx);
+	_draw_rect(VEC2U::ZERO, VEC2U(m_client_size->x, PANEL_HEIGHT), colors::BODY, ctx);
 	_draw_counter(flags, ALIGN_LEFT, ctx);
 	_draw_counter(time, ALIGN_RIGHT, ctx);
+
+	if (game_state == GAME_WON)
+	{
+		sf::Color color = colors::BODY;
+		color.a = 128;
+		_draw_rect(VEC2U::ZERO, *m_client_size, color, ctx);
+
+		VEC2U text_pos = *m_client_size * 0.5 - VEC2U(0, SCORE_SIZE / 2);
+		_draw_text(_format_counter(time), text_pos, SCORE_SIZE, "slkscr.ttf", ALIGN_CENTER, ctx);
+	}
 }

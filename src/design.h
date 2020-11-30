@@ -1,6 +1,4 @@
 #pragma once
-#include "util.h"
-#include <SFML/Graphics/Color.hpp>
 
 #define COLOR(r,g,b) sf::Color(r * 255, g * 255, b * 255)
 
@@ -24,7 +22,6 @@ namespace design
 				COLOR(0,   0,   0),		// black
 				COLOR(0.5, 0.5,	0.5),	// gray
 			};
-
 			const static sf::Color MINE = COLOR(1.0, 1.0, 1.0); // white
 			const static sf::Color FLAG = COLOR(1.0, 0.5, 0.0); // orange
 			
@@ -36,9 +33,11 @@ namespace design
 
 	namespace ui
 	{
-		constexpr UINT  PANEL_HEIGHT = cells::SIZE * 2;
-		constexpr UINT  TEXT_SIZE	 = PANEL_HEIGHT * 0.6;
-		constexpr float INSET_K		 = 0.08f;
+		constexpr UINT  PANEL_HEIGHT	= cells::SIZE * 2;
+		constexpr UINT  COUNTER_SIZE	= PANEL_HEIGHT * 0.6;
+		constexpr float COUNTER_INSET_K	= 0.08f;
+		
+		constexpr UINT  SCORE_SIZE = cells::SIZE * 2.5;
 
 		namespace colors
 		{

@@ -4,7 +4,7 @@ using json = nlohmann::json;
 game_controller::game_controller()
 {
 	// deserialize config data from file
-
+	
 	try
 	{
 		json main;
@@ -15,7 +15,7 @@ game_controller::game_controller()
 		int id = 0;
 
 		for (json& data : main["difficulties"])
-			m_difficulties.push_back(difficulty_t(id++, data["name"], data["mines"], data["size"][0], data["size"][1], data["high-score"]));
+			m_difficulties.push_back(difficulty_t(id++, data["name"], data["mines"], data["size"][0], data["size"][1], data["record"]));
 
 		m_difficulty = &m_difficulties[main["default"]];
 	}
@@ -63,13 +63,14 @@ void game_controller::_start()
 
 void game_controller::_end()
 {
-	m_duration = _ellapsed_time();
 	m_state = m_cells_left ? GAME_LOST : GAME_WON;
+	m_duration = std::time(0) - m_start_time;
 
-	if (m_state == GAME_WON && m_duration < m_difficulty->high_score)
+	if (m_state == GAME_WON && m_duration < m_difficulty->record)
 	{
-		m_difficulty->high_score = m_duration;
+		m_difficulty->record = m_duration;
 		_update_tagline();
+		m_record_set = true;
 	}
 }
 
@@ -77,7 +78,8 @@ void game_controller::_reset()
 {
 	m_flags_left = m_difficulty->mines;
 	m_cells_left = m_difficulty->cell_count - m_flags_left;
-	m_state = GAME_READY;
+	m_state		 = GAME_READY;
+	m_record_set = false;
 
 	m_grid->reset();
 }
@@ -179,8 +181,27 @@ void game_controller::_on_key_down(UINT key)
 
 void game_controller::_on_draw(sf::RenderTarget* ctx)
 {
-	m_ui->on_draw(_ellapsed_time(), m_flags_left, *m_difficulty, ctx);
-	m_grid->on_draw(ctx, m_state, m_hovered_cell);
+	int flags_left = m_flags_left;
+	UINT ellapsed_time = 0;
+
+	// get game vars
+	switch (m_state)
+	{
+	case GAME_READY:
+		ellapsed_time = 0;
+		break;
+	case GAME_STARTED:
+		ellapsed_time = std::time(0) - m_start_time;
+		break;
+	case GAME_WON:
+		flags_left = 0;
+		[[fallthrough]];
+	case GAME_LOST:
+		ellapsed_time = m_duration;
+		break;
+	}
+	m_grid->on_draw(m_state, m_hovered_cell, ctx);
+	m_ui->on_draw(ellapsed_time, flags_left, m_state, ctx);
 }
 
 void game_controller::_on_exit()
@@ -194,10 +215,10 @@ void game_controller::_on_exit()
 	{
 		main["difficulties"] +=
 		{
-			{ "name",		difficulty.name },
-			{ "mines",		difficulty.mines },
-			{ "high-score", difficulty.high_score },
-			{ "size",		{ difficulty.size.x, difficulty.size.y }},
+			{ "name",	difficulty.name   },
+			{ "mines",	difficulty.mines  },
+			{ "record",	difficulty.record },
+			{ "size",	{ difficulty.size.x, difficulty.size.y }},
 		};
 	}
 	std::ofstream stream("config.json");
@@ -239,22 +260,6 @@ void game_controller::_toggle_flag()
 		m_flags_left++;
 }
 
-UINT game_controller::_ellapsed_time()
-{
-	switch (m_state)
-	{
-	case GAME_READY:
-		return 0;
-		break;
-	case GAME_STARTED:
-		return std::time(0) - m_start_time;
-		break;
-	case GAME_WON:
-	case GAME_LOST:
-		return m_duration;
-	}
-}
-
 void game_controller::_check_win()
 {
 	if (!m_cells_left)
@@ -265,8 +270,8 @@ void game_controller::_update_tagline()
 {
 	std::string tagline = m_difficulty->name;
 
-	if (m_difficulty->high_score != UINT_MAX)
-		tagline += " (high-score: " + std::to_string(m_difficulty->high_score) + "s)";
+	if (m_difficulty->record != UINT_MAX)
+		tagline += " (record: " + std::to_string(m_difficulty->record) + "s)";
 
 	m_window->set_tagline(tagline);
 }

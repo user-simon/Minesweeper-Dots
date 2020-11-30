@@ -64,7 +64,7 @@ int cell::open_neighbours()
 	return opened_cells;
 }
 
-void cell::on_draw(sf::RenderTarget* ctx, UINT game_state, bool hovered)
+void cell::on_draw(UINT game_state, bool hovered, sf::RenderTarget* ctx)
 {
 	using namespace design::cells;
 

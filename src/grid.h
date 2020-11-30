@@ -14,7 +14,7 @@ public:
 	void reset();
 	void reposition_mines(cell* from);
 
-	void on_draw(sf::RenderTarget* ctx, UINT game_state, cell* hovered_cell);
+	void on_draw(UINT game_state, cell* hovered_cell, sf::RenderTarget* ctx);
 
 	cell* get_cell(VEC2U pos);
 };

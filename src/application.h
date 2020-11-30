@@ -23,6 +23,6 @@ public:
 	std::function<void(VEC2U)> on_mouse_move;
 	std::function<void(UINT)> on_mouse_down;
 	std::function<void(UINT)> on_key_down;
-	std::function<void(sf::RenderWindow*)> on_draw;
+	std::function<void(sf::RenderTarget*)> on_draw;
 	std::function<void()> on_exit;
 };

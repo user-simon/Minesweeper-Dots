@@ -1,1 +1,1 @@
-# Minesweeper-Dots
+# Dots

@@ -13,14 +13,16 @@ private:
 	VEC2U* m_client_size;
 	std::unordered_map<std::string_view, sf::Font> m_fonts;
 
+	std::string _format_counter(int);
+
 	void _draw_text(std::string_view string, VEC2U pos, UINT size, std::string_view font, text_align_t align, sf::RenderTarget* ctx);
-	void _draw_counter(int num, text_align_t side, sf::RenderTarget* ctx);
 	void _draw_rect(VEC2U pos, VEC2U size, sf::Color color, sf::RenderTarget* ctx);
+	void _draw_counter(int num, text_align_t side, sf::RenderTarget* ctx);
 
 	sf::Font& _font(std::string_view name);
 
 public:
 	ui(VEC2U& client_size);
 
-	void on_draw(UINT time, int flags, difficulty_t& difficulty, sf::RenderTarget* ctx);
+	void on_draw(UINT time, int flags, UINT game_state, sf::RenderTarget* ctx);
 };

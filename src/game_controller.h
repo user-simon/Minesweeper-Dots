@@ -19,6 +19,7 @@ private:
 	difficulty_t* m_difficulty;
 
 	game_state_t m_state;
+	bool m_record_set;
 	UINT m_cells_left;
 	int m_flags_left;
 	long long m_start_time;
@@ -39,7 +40,6 @@ private:
 
 	void _macro();
 	void _toggle_flag();
-	UINT _ellapsed_time();
 	void _check_win();
 	void _update_tagline();
 

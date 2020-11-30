@@ -25,7 +25,7 @@ public:
 	int open();
 	int open_neighbours();
 
-	void on_draw(sf::RenderTarget* ctx, UINT game_state, bool hovered);
+	void on_draw(UINT game_state, bool hovered, sf::RenderTarget* ctx);
 
 	bool has(data_t flag) const;
 	void set(data_t flag, bool val);
