@@ -19,7 +19,6 @@ private:
 	difficulty_t* m_difficulty;
 
 	game_state_t m_state;
-	bool m_record_set;
 	UINT m_cells_left;
 	int m_flags_left;
 	long long m_start_time;

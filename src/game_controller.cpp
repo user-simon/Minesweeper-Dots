@@ -70,7 +70,6 @@ void game_controller::_end()
 	{
 		m_difficulty->record = m_duration;
 		_update_tagline();
-		m_record_set = true;
 	}
 }
 
@@ -79,8 +78,7 @@ void game_controller::_reset()
 	m_flags_left = m_difficulty->mines;
 	m_cells_left = m_difficulty->cell_count - m_flags_left;
 	m_state		 = GAME_READY;
-	m_record_set = false;
-
+	
 	m_grid->reset();
 }
 
