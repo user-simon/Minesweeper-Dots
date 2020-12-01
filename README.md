@@ -53,8 +53,8 @@ The json data:
     "name": "Custom difficulty",
     "record": -1,
     "size": [
-        25,
-        25
+        15,
+        10
     ]
 }
 ```
@@ -64,6 +64,9 @@ would yield this result:
 <p align="center">
 <img src="img/custom_diff.png" width="55%">
 </p>
+
+## Installing
+Simply download and extract the latest release at a location of your choosing and you're good to go.
 
 ## Building
 The project uses C++17 and [SFML](https://www.sfml-dev.org/) for rendering and user input so you'll have to link against that. Because the program is intended to run on multiple platforms, the lib `sfml-main-s` is used to use `main` as an entry-point, as opposed to `WinMain` on Windows, et c.
