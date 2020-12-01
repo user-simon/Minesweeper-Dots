@@ -6,9 +6,11 @@
 
 ## Features
 #### :blue_square:  Sleek design
-#### :baby_bottle:  Easy to use
+#### :baby_bottle:  Easy to use*
 #### :memo: Configurable
 #### :triangular_flag_on_post:  Keeps track of high-scores
+
+*\* Provided the user is familiar with Minesweeper and is literate.*
 
 ------
 
@@ -24,8 +26,18 @@ The difficulty can be changed with the **Number-keys** (1-3 for beginner, interm
 ## Design
 The cells all have a simplified design, with squares of different colors replacing icons.
 
-<img src="img/design.png" height="700" alt="cells_img">
-![design_img](img/design.png)
+<p align="center">
+<img src="img/design.png" width="50%">
+</p>
+
+... and the UI is right where you left it, with flags to the top left and the timer to the top right.
+
+<p align="center">
+<img src="img/ui.png" width="75%">
+</p>
+
+## High-scores
+High-scores are automatically loaded, updated, and saved during the lifetime of the program. The current high-score for each difficulty is displayed in the title bar, following the name of the difficulty.
 
 ## Custom configuration
 Difficulties can be added and modified by changing the [config.json](src/config.json) file which contains data pertinent to each difficulty as well as the default difficulty to be loaded when the program starts. In modifying this file, you could change difficulty names, mine counts, grid sizes, and the high-scores (denoted as `record`).
@@ -34,6 +46,7 @@ You could also add your own, custom difficulties by adding a json structure like
 
 #### Example:
 
+The json data:
 ```json
 {
     "mines": 2,
@@ -46,9 +59,11 @@ You could also add your own, custom difficulties by adding a json structure like
 }
 ```
 
-yields a grid looking as such:
+would yield a grid looking as such:
 
-![custom_diff_img](img/custom_diff.png)
+<p align="center">
+<img src="img/custom_diff.png" width="75%">
+</p>
 
 ## Building
 The project uses C++17 and [SFML](https://www.sfml-dev.org/) for rendering and user input so you'll have to link against that. Because the program is intended to run on multiple platforms, the lib `sfml-main-s` is used to use `main` as an entry-point, as opposed to `WinMain` on Windows, et c.
@@ -57,6 +72,7 @@ The project uses C++17 and [SFML](https://www.sfml-dev.org/) for rendering and u
 - [ ] Create a release for Linux
 - [ ] Add notice when a new high-score is set
 - [ ] Add functionality for a 10th difficulty by utilizing the `0` key for index 9
+- [ ] Improve code documentation
 
 ## Credit
 The font used for the project is [Silkscreen](https://kottke.org/plus/type/silkscreen/index.html).
