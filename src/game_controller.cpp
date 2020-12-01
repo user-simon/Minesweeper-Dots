@@ -37,11 +37,11 @@ game_controller::game_controller()
 
 	using namespace std::placeholders;
 
-	m_window->on_draw = std::bind(&game_controller::_on_draw, this, _1);
-	m_window->on_key_down = std::bind(&game_controller::_on_key_down, this, _1);
+	m_window->on_draw		= std::bind(&game_controller::_on_draw, this, _1);
+	m_window->on_key_down	= std::bind(&game_controller::_on_key_down, this, _1);
 	m_window->on_mouse_down = std::bind(&game_controller::_on_mouse_down, this, _1);
 	m_window->on_mouse_move = std::bind(&game_controller::_on_mouse_move, this, _1);
-	m_window->on_exit = std::bind(&game_controller::_on_exit, this);
+	m_window->on_exit		= std::bind(&game_controller::_on_exit, this);
 
 	// init grid
 

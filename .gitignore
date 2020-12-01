@@ -1,9 +1,9 @@
+config.json
 slkscr.ttf
 *.sln
 *.vcxproj
 *.filters
 *.user
-*/config.json
 /.git
 /.vs
 /Debug
