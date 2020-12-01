@@ -27,13 +27,13 @@ The difficulty can be changed with the **Number-keys** (1-3 for beginner, interm
 The cells all have a simplified design, with squares of different colors replacing icons.
 
 <p align="center">
-<img src="img/design.png" width="50%">
+<img src="img/design.png" width="75%">
 </p>
 
-... and the UI is right where you left it, with flags to the top left and the timer to the top right.
+... and the UI is right where you left it, with flags remaining to the top left and the timer to the top right.
 
 <p align="center">
-<img src="img/ui.png" width="75%">
+<img src="img/ui.png" width="40%">
 </p>
 
 ## High-scores
@@ -49,7 +49,7 @@ You could also add your own, custom difficulties by adding a json structure like
 The json data:
 ```json
 {
-    "mines": 2,
+    "mines": 5,
     "name": "Custom difficulty",
     "record": -1,
     "size": [
@@ -59,10 +59,10 @@ The json data:
 }
 ```
 
-would yield a grid looking as such:
+would yield this result:
 
 <p align="center">
-<img src="img/custom_diff.png" width="75%">
+<img src="img/custom_diff.png" width="55%">
 </p>
 
 ## Building
