@@ -71,6 +71,8 @@ Simply download and extract the latest release at a location of your choosing an
 ## Building
 The project uses C++17 and [SFML](https://www.sfml-dev.org/) for rendering and user input so you'll have to link against that. Because the program is intended to run on multiple platforms, the lib `sfml-main-s` is used to use `main` as an entry-point, as opposed to `WinMain` on Windows, et c.
 
+You also need to include [nlohmann's json library](https://github.com/nlohmann/json) as that is used for serializing/deserializing the difficulty data.
+
 ## Todo
 - [ ] Create a release for Linux
 - [ ] Add notice when a new high-score is set
