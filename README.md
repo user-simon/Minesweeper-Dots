@@ -53,8 +53,8 @@ The json data:
     "name": "Custom difficulty",
     "record": -1,
     "size": [
-        25,
-        25
+        15,
+        10
     ]
 }
 ```
@@ -65,14 +65,20 @@ would yield this result:
 <img src="img/custom_diff.png" width="55%">
 </p>
 
+## Installing
+Simply download and extract the latest release at a location of your choosing and you're good to go.
+
 ## Building
 The project uses C++17 and [SFML](https://www.sfml-dev.org/) for rendering and user input so you'll have to link against that. Because the program is intended to run on multiple platforms, the lib `sfml-main-s` is used to use `main` as an entry-point, as opposed to `WinMain` on Windows, et c.
+
+You also need to include [nlohmann's json library](https://github.com/nlohmann/json) as that is used for serializing/deserializing the difficulty data.
 
 ## Todo
 - [ ] Create a release for Linux
 - [ ] Add notice when a new high-score is set
 - [ ] Add functionality for a 10th difficulty by utilizing the `0` key for index 9
 - [ ] Improve code documentation
+- [ ] Make the window size scale depending on monitor resolution, so the window doesn't go out of bounds
 
 ## Credit
 The font used for the project is [Silkscreen](https://kottke.org/plus/type/silkscreen/index.html).
