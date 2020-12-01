@@ -76,6 +76,7 @@ The project uses C++17 and [SFML](https://www.sfml-dev.org/) for rendering and u
 - [ ] Add notice when a new high-score is set
 - [ ] Add functionality for a 10th difficulty by utilizing the `0` key for index 9
 - [ ] Improve code documentation
+- [ ] Make the window size scale depending on monitor resolution, so the window doesn't go out of bounds
 
 ## Credit
 The font used for the project is [Silkscreen](https://kottke.org/plus/type/silkscreen/index.html).
