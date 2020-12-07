@@ -8,14 +8,14 @@
 #### :blue_square:  Sleek design
 #### :baby_bottle:  Easy to use*
 #### :memo: Configurable
-#### :triangular_flag_on_post:  Keeps track of high-scores
+#### :triangular_flag_on_post:  Keeps track of statistics
 
 *\* Provided the user is familiar with Minesweeper and is literate.*
 
 ------
 
 ## About
-The project was born out of a personal "need" for a dedicated Minesweeper app which keeps track of high-scores for different difficulties. During the development I decided
+The project was born out of a personal "need" for a dedicated Minesweeper app which keeps track of statistics for different difficulties. During the development I decided
 to also spice up (spice down?) the visuals a tad, simplifying things as much as possible. Because of the somewhat abstract representation of numbers, Dots is probably best suited for those who are familiar with the classic Minesweeper and its colors.
 
 #### Keybinds
@@ -36,22 +36,23 @@ The cells all have a simplified design, with squares of different colors replaci
 <img src="img/ui.png" width="40%">
 </p>
 
-## High-scores
-High-scores are automatically loaded, updated, and saved during the lifetime of the program. The current high-score for each difficulty is displayed in the title bar, following the name of the difficulty.
+## Statistics
+Statistics are automatically loaded, updated, and saved during the lifetime of the program. The current high-and average score for each difficulty is displayed in the title bar, following the name of the difficulty.
 
 ## Custom configuration
-Difficulties can be added and modified by changing the [config.json](src/config.json) file which contains data pertinent to each difficulty as well as the default difficulty to be loaded when the program starts. In modifying this file, you could change difficulty names, mine counts, grid sizes, and the high-scores (denoted as `record`).
+Difficulties can be added and modified by changing the [config.json](src/config.json) file which contains data pertinent to each difficulty as well as the default difficulty to be loaded when the program starts. In modifying this file, you could change difficulty names, mine counts, grid sizes, high-scores (denoted as `record`), times played, and the average scores.
 
-You could also add your own, custom difficulties by adding a json structure like the existing ones to the difficulty array. These can be accessed by pressing the **Number key** corresponding to the difficulties' index within the array, this unfortunetely limits the total amount of difficulties to 9.
+You could also add your own, custom difficulties by adding a json structure like the existing ones to the difficulty array. These can be accessed by pressing the **Number key** corresponding to the difficulties' index within the array, this unfortunately limits the total amount of difficulties to 9.
+
+Note that statistics such as the average or high-score don't have to be included upon first addition to the config file.
 
 #### Example:
 
-The json data:
+Adding the following json data to the config file:
 ```json
 {
     "mines": 5,
     "name": "Custom difficulty",
-    "record": -1,
     "size": [
         15,
         10
@@ -59,7 +60,7 @@ The json data:
 }
 ```
 
-would yield this result:
+and pressing the **Number key 4** would yield this result:
 
 <p align="center">
 <img src="img/custom_diff.png" width="55%">
@@ -67,6 +68,11 @@ would yield this result:
 
 ## Installing
 Simply download and extract the latest release at a location of your choosing and you're good to go.
+
+## Updating
+Generally, in order to update one simply has to download the latest version and replace the config file to keep existing statistics; in some cases, however, 
+the structure of the config file might be different between different versions, in which case you'd have to transfer the old statistics to the provided,
+updated config file.
 
 ## Building
 The project uses C++17 and [SFML](https://www.sfml-dev.org/) for rendering and user input so you'll have to link against that. Because the program is intended to run on multiple platforms, the lib `sfml-main-s` is used to use `main` as an entry-point, as opposed to `WinMain` on Windows, et c.
