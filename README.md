@@ -81,7 +81,6 @@ You also need to include [nlohmann's json library](https://github.com/nlohmann/j
 
 ## Todo
 - [ ] Create a release for Linux
-- [ ] Add notice when a new high-score is set
 - [ ] Add functionality for a 10th difficulty by utilizing the `0` key for index 9
 - [ ] Improve code documentation
 - [ ] Make the window size scale depending on monitor resolution, so the window doesn't go out of bounds
