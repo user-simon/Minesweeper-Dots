@@ -15,7 +15,7 @@ private:
 
 	std::string _format_counter(int);
 
-	void _draw_text(std::string_view string, VEC2U pos, UINT size, std::string_view font, text_align_t align, sf::RenderTarget* ctx);
+	void _draw_text(std::string_view string, VEC2I pos, UINT size, std::string_view font, text_align_t align, sf::RenderTarget* ctx);
 	void _draw_rect(VEC2U pos, VEC2U size, sf::Color color, sf::RenderTarget* ctx);
 	void _draw_counter(int num, text_align_t side, sf::RenderTarget* ctx);
 

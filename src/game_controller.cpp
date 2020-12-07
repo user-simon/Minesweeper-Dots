@@ -85,9 +85,17 @@ void game_controller::_end()
 			m_state.beat_average = true;
 
 		// update average (https://math.stackexchange.com/questions/22348/how-to-add-and-subtract-values-from-an-average)
-		m_difficulty->average += std::round(((int)m_state.duration - m_difficulty->average) / (int)++m_difficulty->times_played);
+		{
+			// limit times played to 20 for the calculation so new scores aren't weighed too low
+			const int times_played = std::min(++m_difficulty->times_played, 20U);
+
+			// round difference to nearest whole second
+			const int delta = std::round((float)m_state.duration - m_difficulty->average);
+
+			m_difficulty->average += delta / times_played;
+		}
 		
-		// update record if a new one is set
+		// update high-score if new one is set
 		if (m_state.duration < m_difficulty->record)
 		{
 			m_difficulty->record = m_state.duration;
@@ -280,6 +288,9 @@ void game_controller::_macro()
 
 void game_controller::_toggle_flag()
 {
+	if (m_hovered_cell->has(cell::DATA_OPEN))
+		return;
+
 	if (m_hovered_cell->toggle(cell::DATA_FLAG))
 		m_state.flags_left--;
 	else
