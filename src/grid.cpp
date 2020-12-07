@@ -83,10 +83,10 @@ void grid::reposition_mines(cell* clicked)
 	}
 }
 
-void grid::on_draw(UINT game_state, cell* hovered_cell, sf::RenderTarget* ctx)
+void grid::on_draw(UINT game_phase, cell* hovered_cell, sf::RenderTarget* ctx)
 {
 	for (std::unique_ptr<cell>& c : m_cells)
-		c->on_draw(game_state, c.get() == hovered_cell, ctx);
+		c->on_draw(game_phase, c.get() == hovered_cell, ctx);
 }
 
 cell* grid::get_cell(VEC2U pos)

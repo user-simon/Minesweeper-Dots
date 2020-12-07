@@ -13,10 +13,23 @@ game_controller::game_controller()
 		stream.close();
 
 		int id = 0;
-
+		
 		for (json& data : main["difficulties"])
-			m_difficulties.push_back(difficulty_t(id++, data["name"], data["mines"], data["size"][0], data["size"][1], data["record"]));
-
+		{
+			// use different constructor if data doesn't contain statistics
+			if (!data.count("times_played"))
+			{
+				m_difficulties.emplace_back(
+					id++, data["name"], data["mines"], data["size"][0], data["size"][1]
+				);
+			}
+			else
+			{
+				m_difficulties.emplace_back(
+					id++, data["name"], data["mines"], data["size"][0], data["size"][1], data["record"], data["times_played"], data["average"]
+				);
+			}
+		}
 		m_difficulty = &m_difficulties[main["default"]];
 	}
 	catch (...)
@@ -30,18 +43,18 @@ game_controller::game_controller()
 	const VEC2U window_size = m_difficulty->size * design::cells::SIZE + VEC2U(0, design::ui::PANEL_HEIGHT);
 
 	m_window = std::make_unique<application>(window_size, "Dots");
-	m_grid	 = std::make_unique<grid>();
-	m_ui	 = std::make_unique<ui>(m_window->client_size());
+	m_grid   = std::make_unique<grid>();
+	m_ui     = std::make_unique<ui>(m_window->client_size());
 
 	// bind window callbacks
 
 	using namespace std::placeholders;
 
-	m_window->on_draw		= std::bind(&game_controller::_on_draw, this, _1);
-	m_window->on_key_down	= std::bind(&game_controller::_on_key_down, this, _1);
+	m_window->on_draw       = std::bind(&game_controller::_on_draw, this, _1);
+	m_window->on_key_down   = std::bind(&game_controller::_on_key_down, this, _1);
 	m_window->on_mouse_down = std::bind(&game_controller::_on_mouse_down, this, _1);
 	m_window->on_mouse_move = std::bind(&game_controller::_on_mouse_move, this, _1);
-	m_window->on_exit		= std::bind(&game_controller::_on_exit, this);
+	m_window->on_exit       = std::bind(&game_controller::_on_exit, this);
 
 	// init grid
 
@@ -49,36 +62,49 @@ game_controller::game_controller()
 	_reset();
 
 	// exec window
-
-	_update_tagline();
+	
 	m_window->exec();
 }
 
 void game_controller::_start()
 {
-	m_state = GAME_STARTED;
+	m_state.phase = GAME_STARTED;
 	m_grid->reposition_mines(m_hovered_cell);
-	m_start_time = std::time(0);
+	m_state.start_time = std::time(0);
 }
 
 void game_controller::_end()
 {
-	m_state = m_cells_left ? GAME_LOST : GAME_WON;
-	m_duration = std::time(0) - m_start_time;
+	m_state.phase = m_state.cells_left ? GAME_LOST : GAME_WON;
+	m_state.duration = std::time(0) - m_state.start_time;
 
-	if (m_state == GAME_WON && m_duration < m_difficulty->record)
+	// update difficulty statistics if the game was won
+	if (m_state.phase == GAME_WON)
 	{
-		m_difficulty->record = m_duration;
-		_update_tagline();
+		if (m_state.duration < m_difficulty->average)
+			m_state.beat_average = true;
+
+		// update average (https://math.stackexchange.com/questions/22348/how-to-add-and-subtract-values-from-an-average)
+		m_difficulty->average += std::round(((int)m_state.duration - m_difficulty->average) / (int)++m_difficulty->times_played);
+		
+		// update record if a new one is set
+		if (m_state.duration < m_difficulty->record)
+		{
+			m_difficulty->record = m_state.duration;
+			m_state.beat_record = true;
+		}
 	}
 }
 
 void game_controller::_reset()
 {
-	m_flags_left = m_difficulty->mines;
-	m_cells_left = m_difficulty->cell_count - m_flags_left;
-	m_state		 = GAME_READY;
+	m_state.phase        = GAME_READY;
+	m_state.cells_left   = m_difficulty->cell_count - m_difficulty->mines;
+	m_state.flags_left   = m_difficulty->mines;
+	m_state.beat_record  = false;
+	m_state.beat_average = false;
 	
+	_update_tagline();
 	m_grid->reset();
 }
 
@@ -97,7 +123,7 @@ void game_controller::_on_mouse_move(VEC2I pos)
 
 void game_controller::_on_mouse_down(UINT button)
 {
-	if (m_state > GAME_STARTED)
+	if (m_state.phase > GAME_STARTED)
 	{
 		_reset();
 		return;
@@ -112,12 +138,12 @@ void game_controller::_on_mouse_down(UINT button)
 		
 		case BUTTON::Left: // open
 		{
-			if (m_state == GAME_READY)
+			if (m_state.phase == GAME_READY)
 				_start();
 
 			if (int buf; (buf = m_hovered_cell->open()) >= 0)
 			{
-				m_cells_left -= buf;
+				m_state.cells_left -= buf;
 				_check_win();
 				return;
 			}
@@ -179,27 +205,27 @@ void game_controller::_on_key_down(UINT key)
 
 void game_controller::_on_draw(sf::RenderTarget* ctx)
 {
-	int flags_left = m_flags_left;
+	int flags_left = m_state.flags_left;
 	UINT ellapsed_time = 0;
 
 	// get game vars
-	switch (m_state)
+	switch (m_state.phase)
 	{
 	case GAME_READY:
 		ellapsed_time = 0;
 		break;
 	case GAME_STARTED:
-		ellapsed_time = std::time(0) - m_start_time;
+		ellapsed_time = std::time(0) - m_state.start_time;
 		break;
 	case GAME_WON:
 		flags_left = 0;
 		[[fallthrough]];
 	case GAME_LOST:
-		ellapsed_time = m_duration;
+		ellapsed_time = m_state.duration;
 		break;
 	}
-	m_grid->on_draw(m_state, m_hovered_cell, ctx);
-	m_ui->on_draw(ellapsed_time, flags_left, m_state, ctx);
+	m_grid->on_draw(m_state.phase, m_hovered_cell, ctx);
+	m_ui->on_draw(ellapsed_time, m_state, ctx);
 }
 
 void game_controller::_on_exit()
@@ -213,10 +239,12 @@ void game_controller::_on_exit()
 	{
 		main["difficulties"] +=
 		{
-			{ "name",	difficulty.name   },
-			{ "mines",	difficulty.mines  },
-			{ "record",	difficulty.record },
-			{ "size",	{ difficulty.size.x, difficulty.size.y }},
+			{ "name",         difficulty.name   },
+			{ "mines",        difficulty.mines  },
+			{ "size",         { difficulty.size.x, difficulty.size.y }},
+			{ "record",       difficulty.record },
+			{ "times_played", difficulty.times_played },
+			{ "average",      difficulty.average }
 		};
 	}
 	std::ofstream stream("config.json");
@@ -229,14 +257,14 @@ void game_controller::_macro()
 	if (!m_hovered_cell)
 		return;
 
-	if (m_state > GAME_STARTED)
+	if (m_state.phase > GAME_STARTED)
 		return;
 
 	if (m_hovered_cell->has(cell::DATA_OPEN))
 	{
 		if (int buf; (buf = m_hovered_cell->open_neighbours()) >= 0)
 		{
-			m_cells_left -= buf;
+			m_state.cells_left -= buf;
 			_check_win();
 		}
 		else
@@ -253,14 +281,14 @@ void game_controller::_macro()
 void game_controller::_toggle_flag()
 {
 	if (m_hovered_cell->toggle(cell::DATA_FLAG))
-		m_flags_left--;
+		m_state.flags_left--;
 	else
-		m_flags_left++;
+		m_state.flags_left++;
 }
 
 void game_controller::_check_win()
 {
-	if (!m_cells_left)
+	if (!m_state.cells_left)
 		_end();
 }
 
@@ -268,8 +296,8 @@ void game_controller::_update_tagline()
 {
 	std::string tagline = m_difficulty->name;
 
-	if (m_difficulty->record != UINT_MAX)
-		tagline += " (record: " + std::to_string(m_difficulty->record) + "s)";
+	if (m_difficulty->times_played)
+		tagline += " (top: " + std::to_string(m_difficulty->record) + "s, avg: " + std::to_string(m_difficulty->average) + "s)";
 
 	m_window->set_tagline(tagline);
 }

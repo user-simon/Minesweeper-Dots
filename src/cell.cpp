@@ -64,7 +64,7 @@ int cell::open_neighbours()
 	return opened_cells;
 }
 
-void cell::on_draw(UINT game_state, bool hovered, sf::RenderTarget* ctx)
+void cell::on_draw(UINT game_phase, bool hovered, sf::RenderTarget* ctx)
 {
 	using namespace design::cells;
 
@@ -74,7 +74,7 @@ void cell::on_draw(UINT game_state, bool hovered, sf::RenderTarget* ctx)
 	constexpr VEC2U BODY_OFFSET = VEC2U(0, design::ui::PANEL_HEIGHT);
 
 	constexpr UINT  DOT_INSET_DIST = (SIZE - DOT_SIZE) / 2;
-	constexpr VEC2U DOT_OFFSET	   = VEC2U(DOT_INSET_DIST, DOT_INSET_DIST + design::ui::PANEL_HEIGHT);
+	constexpr VEC2U DOT_OFFSET     = VEC2U(DOT_INSET_DIST, DOT_INSET_DIST + design::ui::PANEL_HEIGHT);
 	
 	// body
 	{
@@ -91,13 +91,13 @@ void cell::on_draw(UINT game_state, bool hovered, sf::RenderTarget* ctx)
 	}
 	
 	// dot
-	if ((has(DATA_OPEN) && m_number) || has(DATA_FLAG) || (has(DATA_MINE) && game_state > GAME_STARTED))
+	if ((has(DATA_OPEN) && m_number) || has(DATA_FLAG) || (has(DATA_MINE) && game_phase > GAME_STARTED))
 	{
 		dot.setPosition(m_pos * SIZE + DOT_OFFSET);
 
 		if (has(DATA_OPEN))
 			dot.setFillColor(colors::NUMBER[m_number - 1]);
-		else if (has(DATA_FLAG) || has(DATA_MINE) && game_state == GAME_WON)
+		else if (has(DATA_FLAG) || has(DATA_MINE) && game_phase == GAME_WON)
 			dot.setFillColor(colors::FLAG);
 		else
 			dot.setFillColor(colors::MINE);

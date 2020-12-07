@@ -8,6 +8,7 @@
 #include <json.hpp>
 
 #include "util.h"
+#include "game_state.h"
 #include "difficulty.h"
 #include "design.h"
 

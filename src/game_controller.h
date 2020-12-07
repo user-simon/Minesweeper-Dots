@@ -1,13 +1,5 @@
 #pragma once
 
-enum game_state_t : UINT
-{
-	GAME_READY,
-	GAME_STARTED,
-	GAME_WON,
-	GAME_LOST,
-};
-
 class game_controller
 {
 private:
@@ -19,10 +11,6 @@ private:
 	difficulty_t* m_difficulty;
 
 	game_state_t m_state;
-	UINT m_cells_left;
-	int m_flags_left;
-	long long m_start_time;
-	UINT m_duration;
 
 	cell* m_hovered_cell;
 

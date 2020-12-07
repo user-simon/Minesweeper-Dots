@@ -24,5 +24,5 @@ private:
 public:
 	ui(VEC2U& client_size);
 
-	void on_draw(UINT time, int flags, UINT game_state, sf::RenderTarget* ctx);
+	void on_draw(UINT ellapsed_time, game_state_t game_state, sf::RenderTarget* ctx);
 };

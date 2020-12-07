@@ -4,7 +4,6 @@
         {
             "mines": 10,
             "name": "Beginner",
-            "record": 4294967295,
             "size": [
                 9,
                 9
@@ -13,7 +12,6 @@
         {
             "mines": 40,
             "name": "Intermediate",
-            "record": 4294967295,
             "size": [
                 16,
                 16
@@ -22,7 +20,6 @@
         {
             "mines": 99,
             "name": "Expert",
-            "record": 4294967295,
             "size": [
                 30,
                 16
