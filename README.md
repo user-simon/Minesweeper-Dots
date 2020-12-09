@@ -1,21 +1,21 @@
 ![title img](img/title.png)
 
-## Dots is a sleek, modern implementation of Minesweeper, focused on high-scores and with cross-platform compatability
+## Dots is a sleek, modern Minesweeper client, focused on high-scores and with cross-platform compatability
 
 ------
 
 ## Features
-#### :blue_square:  Sleek design
-#### :baby_bottle:  Easy to use*
+#### :blue_square: Sleek design
+#### :baby_bottle: Easy to use*
 #### :memo: Configurable
-#### :triangular_flag_on_post:  Keeps track of statistics
+#### :triangular_flag_on_post: Keeps track of statistics
 
 *\* Provided the user is familiar with Minesweeper and is literate.*
 
 ------
 
 ## About
-The project was born out of a personal "need" for a dedicated Minesweeper app which keeps track of statistics for different difficulties. During the development I decided
+The project was born out of a personal "need" for a dedicated Minesweeper client which keeps track of statistics for different difficulties. During the development I decided
 to also spice up (spice down?) the visuals a tad, simplifying things as much as possible. Because of the somewhat abstract representation of numbers, Dots is probably best suited for those who are familiar with the classic Minesweeper and its colors.
 
 #### Keybinds
