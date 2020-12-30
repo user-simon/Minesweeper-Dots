@@ -81,6 +81,8 @@ void game_controller::_end()
 	// update difficulty statistics if the game was won
 	if (m_state.phase == GAME_WON)
 	{
+		m_state.flags_left = 0;
+
 		if (m_state.duration < m_difficulty->average)
 			m_state.beat_average = true;
 
@@ -225,8 +227,6 @@ void game_controller::_on_draw(sf::RenderTarget* ctx)
 		ellapsed_time = std::time(0) - m_state.start_time;
 		break;
 	case GAME_WON:
-		m_state.flags_left = 0;
-		[[fallthrough]];
 	case GAME_LOST:
 		ellapsed_time = m_state.duration;
 		break;

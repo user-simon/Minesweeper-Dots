@@ -1,5 +1,5 @@
-config.json
 slkscr.ttf
+*.json
 *.sln
 *.vcxproj
 *.filters
