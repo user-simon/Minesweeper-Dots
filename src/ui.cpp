@@ -111,10 +111,10 @@ void ui::on_draw(UINT ellapsed_time, game_state_t game_state, sf::RenderTarget* 
 		{
 			VEC2U title_pos = time_pos;
 
-			title_pos.y *= 0.8f;
-			time_pos.y  *= 1.10f;
+			title_pos.y *= 0.85f;
+			time_pos.y  *= 1.15f;
 
- 			_draw_text("New record!", title_pos, TITLE_SIZE, "slkscr.ttf", ALIGN_CENTER, ctx);
+ 			_draw_text("NEW PB!", title_pos, TITLE_SIZE, "slkscr.ttf", ALIGN_CENTER, ctx);
 		}
 		_draw_text(_format_counter(ellapsed_time), time_pos, SCORE_SIZE, "slkscr.ttf", ALIGN_CENTER, ctx);
 	}

@@ -26,7 +26,7 @@ game_controller::game_controller()
 			else
 			{
 				m_difficulties.emplace_back(
-					id++, data["name"], data["mines"], data["size"][0], data["size"][1], data["record"], data["times_played"], data["average"]
+					id++, data["name"], data["mines"], data["size"][0], data["size"][1], data["pb"], data["times_played"], data["average"]
 				);
 			}
 		}
@@ -69,7 +69,7 @@ game_controller::game_controller()
 void game_controller::_start()
 {
 	m_state.phase = GAME_STARTED;
-	m_grid->reposition_mines(m_hovered_cell);
+	m_grid->move_mines(m_hovered_cell);
 	m_state.start_time = std::time(0);
 }
 
@@ -86,8 +86,8 @@ void game_controller::_end()
 
 		// update average (https://math.stackexchange.com/questions/22348/how-to-add-and-subtract-values-from-an-average)
 		{
-			// limit times played to 20 for the calculation so new scores aren't weighed too low
-			const int times_played = std::min(++m_difficulty->times_played, 20U);
+			// limit times played to 10 for the calculation so new scores aren't weighed too low
+			const int times_played = std::min(++m_difficulty->times_played, 10U);
 
 			// round difference to nearest whole second
 			const int delta = std::round((float)m_state.duration - m_difficulty->average);
@@ -96,9 +96,9 @@ void game_controller::_end()
 		}
 		
 		// update high-score if new one is set
-		if (m_state.duration < m_difficulty->record)
+		if (m_state.duration < m_difficulty->pb)
 		{
-			m_difficulty->record = m_state.duration;
+			m_difficulty->pb = m_state.duration;
 			m_state.beat_record = true;
 		}
 	}
@@ -213,7 +213,6 @@ void game_controller::_on_key_down(UINT key)
 
 void game_controller::_on_draw(sf::RenderTarget* ctx)
 {
-	int flags_left = m_state.flags_left;
 	UINT ellapsed_time = 0;
 
 	// get game vars
@@ -226,7 +225,7 @@ void game_controller::_on_draw(sf::RenderTarget* ctx)
 		ellapsed_time = std::time(0) - m_state.start_time;
 		break;
 	case GAME_WON:
-		flags_left = 0;
+		m_state.flags_left = 0;
 		[[fallthrough]];
 	case GAME_LOST:
 		ellapsed_time = m_state.duration;
@@ -247,10 +246,10 @@ void game_controller::_on_exit()
 	{
 		main["difficulties"] +=
 		{
-			{ "name",         difficulty.name   },
-			{ "mines",        difficulty.mines  },
+			{ "name",         difficulty.name },
+			{ "mines",        difficulty.mines },
 			{ "size",         { difficulty.size.x, difficulty.size.y }},
-			{ "record",       difficulty.record },
+			{ "pb",			  difficulty.pb },
 			{ "times_played", difficulty.times_played },
 			{ "average",      difficulty.average }
 		};
@@ -308,7 +307,7 @@ void game_controller::_update_tagline()
 	std::string tagline = m_difficulty->name;
 
 	if (m_difficulty->times_played)
-		tagline += " (top: " + std::to_string(m_difficulty->record) + "s, avg: " + std::to_string(m_difficulty->average) + "s)";
+		tagline += " (pb: " + std::to_string(m_difficulty->pb) + "s, avg: " + std::to_string(m_difficulty->average) + "s)";
 
 	m_window->set_tagline(tagline);
 }

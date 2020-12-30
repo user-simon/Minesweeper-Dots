@@ -38,7 +38,7 @@ namespace design
 		constexpr float COUNTER_INSET_K = 0.08f;
 		
 		constexpr UINT  SCORE_SIZE = cells::SIZE * 2.5;
-		constexpr UINT  TITLE_SIZE = SCORE_SIZE * 0.45;
+		constexpr UINT  TITLE_SIZE = SCORE_SIZE * 0.6;
 
 		namespace colors
 		{

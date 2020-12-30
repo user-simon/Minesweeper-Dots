@@ -12,7 +12,7 @@ private:
 public:
 	void init(difficulty_t*);
 	void reset();
-	void reposition_mines(cell* from);
+	void move_mines(cell* from);
 
 	void on_draw(UINT game_phase, cell* hovered_cell, sf::RenderTarget* ctx);
 

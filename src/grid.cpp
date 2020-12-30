@@ -40,10 +40,11 @@ void grid::reset()
 {
 	for (std::unique_ptr<cell>& c : m_cells)
 		c->init();
+
 	_populate();
 }
 
-void grid::reposition_mines(cell* clicked)
+void grid::move_mines(cell* clicked)
 {
 	UINT mines_to_move = clicked->number();
 	
@@ -105,7 +106,8 @@ void grid::_populate()
 		do
 		{
 			pos = get_random(m_difficulty->cell_count);
-		} while (m_cells[pos]->has(cell::DATA_MINE));
+		}
+		while (m_cells[pos]->has(cell::DATA_MINE));
 
 		m_cells[pos]->set(cell::DATA_MINE, true);
 	}
