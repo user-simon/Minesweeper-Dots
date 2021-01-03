@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "cell.h"
 
-cell::cell(VEC2U pos)
+cell::cell(vec2u pos)
 {
 	m_pos = pos;
 	m_neighbours.reserve(3);
@@ -25,7 +25,7 @@ int cell::open()
 	
 	set(DATA_OPEN, true);
 	
-	UINT opened_cells = 1;
+	uint opened_cells = 1;
 
 	// recursively open all connecting cells with no surrounding mines
 	if (!m_number)
@@ -41,7 +41,7 @@ int cell::open_neighbours()
 	if (!has(DATA_OPEN))
 		return 0;
 
-	UINT flags = 0;
+	uint flags = 0;
 
 	for (cell* nc : m_neighbours)
 	{
@@ -52,7 +52,7 @@ int cell::open_neighbours()
 	if (flags != m_number)
 		return 0;
 
-	UINT opened_cells = 0;
+	uint opened_cells = 0;
 
 	for (cell* nc : m_neighbours)
 	{
@@ -64,17 +64,17 @@ int cell::open_neighbours()
 	return opened_cells;
 }
 
-void cell::on_draw(UINT game_phase, bool hovered, sf::RenderTarget* ctx)
+void cell::on_draw(uint game_phase, bool hovered, sf::RenderTarget* ctx)
 {
 	using namespace design::cells;
 
-	static sf::RectangleShape body(VEC2U(SIZE, SIZE));
-	static sf::RectangleShape dot(VEC2U(DOT_SIZE, DOT_SIZE));
+	static sf::RectangleShape body(vec2u(SIZE, SIZE));
+	static sf::RectangleShape dot(vec2u(DOT_SIZE, DOT_SIZE));
 
-	constexpr VEC2U BODY_OFFSET = VEC2U(0, design::ui::PANEL_HEIGHT);
+	constexpr vec2u BODY_OFFSET = vec2u(0, design::ui::PANEL_HEIGHT);
 
-	constexpr UINT  DOT_INSET_DIST = (SIZE - DOT_SIZE) / 2;
-	constexpr VEC2U DOT_OFFSET     = VEC2U(DOT_INSET_DIST, DOT_INSET_DIST + design::ui::PANEL_HEIGHT);
+	constexpr uint  DOT_INSET_DIST = (SIZE - DOT_SIZE) / 2;
+	constexpr vec2u DOT_OFFSET     = vec2u(DOT_INSET_DIST, DOT_INSET_DIST + design::ui::PANEL_HEIGHT);
 	
 	// body
 	{
@@ -124,7 +124,7 @@ void cell::set(data_t flag, bool val)
 	// update neighbours' numbers if we placed or removed a mine
 	if (flag == DATA_MINE)
 	{
-		const UINT delta = val ? 1 : -1;
+		const uint delta = val ? 1 : -1;
 
 		for (cell* c : m_neighbours)
 			c->number() += delta;
@@ -137,12 +137,12 @@ bool cell::toggle(data_t flag)
 	return has(flag);
 }
 
-VEC2U& cell::pos()
+vec2u& cell::pos()
 {
 	return m_pos;
 }
 
-UINT& cell::number()
+uint& cell::number()
 {
 	return m_number;
 }

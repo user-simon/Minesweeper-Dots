@@ -1,6 +1,6 @@
 #pragma once
 
-enum game_phase_t : UINT
+enum GAME_PHASE : uint
 {
 	GAME_READY,
 	GAME_STARTED,
@@ -10,17 +10,22 @@ enum game_phase_t : UINT
 
 struct game_state_t
 {
-	game_phase_t phase;
+	GAME_PHASE phase;
 
 	// started
-	UINT cells_left;
+	uint cells_left;
 	int flags_left;
-	long long start_time;
+	std::chrono::system_clock::time_point start_time;
 
 	// over
-	UINT duration;
+	float duration;
 
 	// won
-	bool beat_record;
-	bool beat_average;
+	bool beat_pb;
+	bool beat_avg;
+
+	void update_duration()
+	{
+		duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() / 1000.f;
+	}
 };

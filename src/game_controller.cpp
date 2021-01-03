@@ -17,16 +17,18 @@ game_controller::game_controller()
 		for (json& data : main["difficulties"])
 		{
 			// use different constructor if data doesn't contain statistics
-			if (!data.count("times_played"))
+			if (data.count("stats"))
 			{
+				json& stats = data["stats"];
+
 				m_difficulties.emplace_back(
-					id++, data["name"], data["mines"], data["size"][0], data["size"][1]
+					id++, data["name"], data["mines"], data["size"][0], data["size"][1], stats["pb"], stats["completions"], stats["average"]
 				);
 			}
 			else
 			{
 				m_difficulties.emplace_back(
-					id++, data["name"], data["mines"], data["size"][0], data["size"][1], data["pb"], data["times_played"], data["average"]
+					id++, data["name"], data["mines"], data["size"][0], data["size"][1]
 				);
 			}
 		}
@@ -40,7 +42,7 @@ game_controller::game_controller()
 
 	// create helper classes
 
-	const VEC2U window_size = m_difficulty->size * design::cells::SIZE + VEC2U(0, design::ui::PANEL_HEIGHT);
+	const vec2u window_size = m_difficulty->size * design::cells::SIZE + vec2u(0, design::ui::PANEL_HEIGHT);
 
 	m_window = std::make_unique<application>(window_size, "Dots");
 	m_grid   = std::make_unique<grid>();
@@ -70,38 +72,36 @@ void game_controller::_start()
 {
 	m_state.phase = GAME_STARTED;
 	m_grid->move_mines(m_hovered_cell);
-	m_state.start_time = std::time(0);
+	m_state.start_time = std::chrono::system_clock::now();
 }
 
 void game_controller::_end()
 {
 	m_state.phase = m_state.cells_left ? GAME_LOST : GAME_WON;
-	m_state.duration = std::time(0) - m_state.start_time;
+	m_state.update_duration();
 
 	// update difficulty statistics if the game was won
 	if (m_state.phase == GAME_WON)
 	{
 		m_state.flags_left = 0;
 
-		if (m_state.duration < m_difficulty->average)
-			m_state.beat_average = true;
+		if (m_state.duration < m_difficulty->avg)
+			m_state.beat_avg = true;
 
 		// update average (https://math.stackexchange.com/questions/22348/how-to-add-and-subtract-values-from-an-average)
 		{
-			// limit times played to 10 for the calculation so new scores aren't weighed too low
-			const int times_played = std::min(++m_difficulty->times_played, 10U);
+			// limit times played to 5 for the calculation so new scores aren't weighed too low
+			const int completions = std::min(++m_difficulty->completions, 5U);
 
-			// round difference to nearest whole second
-			const int delta = std::round((float)m_state.duration - m_difficulty->average);
-
-			m_difficulty->average += delta / times_played;
+			// calculate new average
+ 			m_difficulty->avg += (m_state.duration - m_difficulty->avg) / completions;
 		}
 		
 		// update high-score if new one is set
-		if (m_state.duration < m_difficulty->pb)
+		if (m_state.duration < m_difficulty->pb || m_difficulty->pb < 0)
 		{
 			m_difficulty->pb = m_state.duration;
-			m_state.beat_record = true;
+			m_state.beat_pb = true;
 		}
 	}
 }
@@ -111,14 +111,15 @@ void game_controller::_reset()
 	m_state.phase        = GAME_READY;
 	m_state.cells_left   = m_difficulty->cell_count - m_difficulty->mines;
 	m_state.flags_left   = m_difficulty->mines;
-	m_state.beat_record  = false;
-	m_state.beat_average = false;
+	m_state.duration     = 0;
+	m_state.beat_pb  = false;
+	m_state.beat_avg = false;
 	
 	_update_tagline();
 	m_grid->reset();
 }
 
-void game_controller::_on_mouse_move(VEC2I pos)
+void game_controller::_on_mouse_move(vec2i pos)
 {
 	if (pos.y < design::ui::PANEL_HEIGHT)
 	{
@@ -131,7 +132,7 @@ void game_controller::_on_mouse_move(VEC2I pos)
 	m_hovered_cell = m_grid->get_cell(pos);
 }
 
-void game_controller::_on_mouse_down(UINT button)
+void game_controller::_on_mouse_down(uint button)
 {
 	if (m_state.phase > GAME_STARTED)
 	{
@@ -176,7 +177,7 @@ void game_controller::_on_mouse_down(UINT button)
 	}
 }
 
-void game_controller::_on_key_down(UINT key)
+void game_controller::_on_key_down(uint key)
 {	
 	switch (key)
 	{
@@ -197,14 +198,14 @@ void game_controller::_on_key_down(UINT key)
 	// set difficulty if a numbered key was pressed
 	if (key >= 27 && key <= 36)
 	{
-		UINT id = key - 27;
+		uint id = key - 27;
 
 		if (id < m_difficulties.size())
 		{
 			if (id != m_difficulty->id)
 			{
 				m_difficulty = &m_difficulties[id];
-				m_window->resize(m_difficulty->size * design::cells::SIZE + VEC2U(0, design::ui::PANEL_HEIGHT));
+				m_window->resize(m_difficulty->size * design::cells::SIZE + vec2u(0, design::ui::PANEL_HEIGHT));
 				m_grid->init(m_difficulty);
 				_update_tagline();
 			}
@@ -215,24 +216,11 @@ void game_controller::_on_key_down(UINT key)
 
 void game_controller::_on_draw(sf::RenderTarget* ctx)
 {
-	UINT ellapsed_time = 0;
-
-	// get game vars
-	switch (m_state.phase)
-	{
-	case GAME_READY:
-		ellapsed_time = 0;
-		break;
-	case GAME_STARTED:
-		ellapsed_time = std::time(0) - m_state.start_time;
-		break;
-	case GAME_WON:
-	case GAME_LOST:
-		ellapsed_time = m_state.duration;
-		break;
-	}
+	if (m_state.phase == GAME_STARTED)
+		m_state.update_duration();
+	
 	m_grid->on_draw(m_state.phase, m_hovered_cell, ctx);
-	m_ui->on_draw(ellapsed_time, m_state, ctx);
+	m_ui->on_draw(m_state, ctx);
 }
 
 void game_controller::_on_exit()
@@ -241,18 +229,31 @@ void game_controller::_on_exit()
 
 	json main;
 	main["default"] = m_difficulty->id;
+
+	json& difficulties = main["difficulties"];
 	
 	for (difficulty_t& difficulty : m_difficulties)
 	{
-		main["difficulties"] +=
+		json data = 
 		{
-			{ "name",         difficulty.name },
-			{ "mines",        difficulty.mines },
-			{ "size",         { difficulty.size.x, difficulty.size.y }},
-			{ "pb",			  difficulty.pb },
-			{ "times_played", difficulty.times_played },
-			{ "average",      difficulty.average }
+			{ "name",   difficulty.name                        },
+			{ "mines",  difficulty.mines                       },
+			{ "size", { difficulty.size.x, difficulty.size.y } }
 		};
+
+		if (difficulty.completions)
+		{
+			data +=
+			{
+				"stats",
+				{
+					{ "pb",          difficulty.pb          },
+					{ "completions", difficulty.completions },
+					{ "average",     difficulty.avg         }
+				}
+			};
+		}
+		difficulties += data;
 	}
 	std::ofstream stream("config.json");
 	stream << std::setw(4) << main;
@@ -306,8 +307,15 @@ void game_controller::_update_tagline()
 {
 	std::string tagline = m_difficulty->name;
 
-	if (m_difficulty->times_played)
-		tagline += " (pb: " + std::to_string(m_difficulty->pb) + "s, avg: " + std::to_string(m_difficulty->average) + "s)";
+	const static auto format_float = [](float f)
+	{
+		std::stringstream stream;
+		stream << std::fixed << std::setprecision(2) << f;
+		return stream.str();
+	};
+
+	if (m_difficulty->completions)
+		tagline += " (pb: " + format_float(m_difficulty->pb) + "s, avg: " + format_float(m_difficulty->avg) + "s)";
 
 	m_window->set_tagline(tagline);
 }

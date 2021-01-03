@@ -6,7 +6,7 @@ namespace design
 {
 	namespace cells
 	{
-		constexpr UINT  SIZE     = 45;
+		constexpr uint  SIZE     = 45;
 		constexpr float DOT_SIZE = SIZE * 0.4f;
 
 		namespace colors
@@ -33,12 +33,12 @@ namespace design
 
 	namespace ui
 	{
-		constexpr UINT  PANEL_HEIGHT    = cells::SIZE * 2;
-		constexpr UINT  COUNTER_SIZE    = PANEL_HEIGHT * 0.6;
+		constexpr uint  PANEL_HEIGHT    = cells::SIZE * 2;
+		constexpr uint  COUNTER_SIZE    = PANEL_HEIGHT * 0.6;
 		constexpr float COUNTER_INSET_K = 0.08f;
 		
-		constexpr UINT  SCORE_SIZE = cells::SIZE * 2.5;
-		constexpr UINT  TITLE_SIZE = SCORE_SIZE * 0.6;
+		constexpr uint  SCORE_SIZE = cells::SIZE * 2.5;
+		constexpr uint  TITLE_SIZE = SCORE_SIZE * 0.6;
 
 		namespace colors
 		{

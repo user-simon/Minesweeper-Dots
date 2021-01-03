@@ -9,8 +9,8 @@ void grid::init(difficulty_t* difficulty)
 	m_cells.clear();
 	m_cells.reserve(m_difficulty->cell_count);
 
-	for (UINT i = 0; i < m_difficulty->cell_count; i++)
-  		m_cells.emplace_back(std::make_unique<cell>(VEC2U(i % m_difficulty->size.x, i / m_difficulty->size.x)));
+	for (uint i = 0; i < m_difficulty->cell_count; i++)
+  		m_cells.emplace_back(std::make_unique<cell>(vec2u(i % m_difficulty->size.x, i / m_difficulty->size.x)));
 	
 	// set neighbours
 
@@ -20,12 +20,12 @@ void grid::init(difficulty_t* difficulty)
 		{
 			for (int dy = -1; dy <= 1; dy++)
 			{
-				VEC2U dpos = VEC2U(dx, dy);
+				vec2u dpos = vec2u(dx, dy);
 
 				if (!dpos)
 					continue;
 
-				VEC2U npos = c->pos() + dpos;
+				vec2u npos = c->pos() + dpos;
 
 				if (npos.x >= m_difficulty->size.x || npos.y >= m_difficulty->size.y)
 					continue;
@@ -46,7 +46,7 @@ void grid::reset()
 
 void grid::move_mines(cell* clicked)
 {
-	UINT mines_to_move = clicked->number();
+	uint mines_to_move = clicked->number();
 	
 	if (clicked->has(cell::DATA_MINE))
 	{
@@ -62,11 +62,11 @@ void grid::move_mines(cell* clicked)
 
 	// re-add the mines
 
-	for (UINT i = 0; i < mines_to_move; i++)
+	for (uint i = 0; i < mines_to_move; i++)
 	{
 		cell* new_mine_cell = nullptr;
-		VEC2U mine_pos;
-		VEC2I delta;
+		vec2u mine_pos;
+		vec2i delta;
 
 		// randomize mine position until a cell outside the 3x3 grid around the clicked cell
 		// and which does not have a mine is found
@@ -84,13 +84,13 @@ void grid::move_mines(cell* clicked)
 	}
 }
 
-void grid::on_draw(UINT game_phase, cell* hovered_cell, sf::RenderTarget* ctx)
+void grid::on_draw(uint game_phase, cell* hovered_cell, sf::RenderTarget* ctx)
 {
 	for (std::unique_ptr<cell>& c : m_cells)
 		c->on_draw(game_phase, c.get() == hovered_cell, ctx);
 }
 
-cell* grid::get_cell(VEC2U pos)
+cell* grid::get_cell(vec2u pos)
 {
 	return m_cells[pos.x + m_difficulty->size.x * pos.y].get();
 }
@@ -99,9 +99,9 @@ void grid::_populate()
 {
 	// place mines
 
-	for (UINT i = 0; i < m_difficulty->mines; i++)
+	for (uint i = 0; i < m_difficulty->mines; i++)
 	{
-		UINT pos;
+		uint pos;
 
 		do
 		{

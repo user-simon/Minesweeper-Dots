@@ -1,12 +1,12 @@
 #pragma once
 
-typedef unsigned int UINT;
+typedef unsigned int uint;
 
-static UINT get_random(UINT max)
+static uint get_random(uint max)
 {
 	static std::random_device rd;
 	static std::mt19937 gen = std::mt19937(rd());
-	static std::uniform_int_distribution<UINT> dist;
+	static std::uniform_int_distribution<uint> dist;
 
 	return dist(gen) % max;
 }
@@ -70,7 +70,7 @@ template<typename T>
 const vec2_t<T> vec2_t<T>::ZERO = { 0, 0 };
 
 template<>
-vec2_t<UINT> vec2_t<UINT>::abs()
+vec2_t<uint> vec2_t<uint>::abs()
 {
 	return *this;
 }
@@ -132,7 +132,7 @@ vec2_t<T> operator- (vec2_t<T> a, vec2_t<A>b)
 }
 
 template<typename T>
-vec2_t<UINT> operator- (vec2_t<T> a, vec2_t<UINT>b)
+vec2_t<uint> operator- (vec2_t<T> a, vec2_t<uint>b)
 {
 	return a + (vec2_t<int>(b.x, b.y) * -1);
 }
@@ -143,6 +143,6 @@ vec2_t<T>& operator-=(vec2_t<T>& a, vec2_t<A>b)
 	a = a - b; return a;
 }
 
-typedef vec2_t<UINT> VEC2U;
-typedef vec2_t<int> VEC2I;
-typedef vec2_t<float> VEC2F;
+typedef vec2_t<uint> vec2u;
+typedef vec2_t<int> vec2i;
+typedef vec2_t<float> vec2f;

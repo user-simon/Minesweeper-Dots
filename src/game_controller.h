@@ -19,9 +19,9 @@ private:
 	void _end();
 	void _reset();
 
-	void _on_mouse_move(VEC2I pos);
-	void _on_mouse_down(UINT button);
-	void _on_key_down(UINT key);
+	void _on_mouse_move(vec2i pos);
+	void _on_mouse_down(uint button);
+	void _on_key_down(uint key);
 	void _on_draw(sf::RenderTarget* ctx);
 	void _on_exit();
 

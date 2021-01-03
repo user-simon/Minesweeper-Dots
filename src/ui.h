@@ -10,19 +10,19 @@ enum text_align_t
 class ui
 {
 private:
-	VEC2U* m_client_size;
+	vec2u* m_client_size;
 	std::unordered_map<std::string_view, sf::Font> m_fonts;
 
-	std::string _format_counter(int);
+	std::string _format_counter(float num, int precision = 0);
 
-	void _draw_text(std::string_view string, VEC2I pos, UINT size, std::string_view font, text_align_t align, sf::RenderTarget* ctx);
-	void _draw_rect(VEC2U pos, VEC2U size, sf::Color color, sf::RenderTarget* ctx);
+	void _draw_text(std::string_view string, vec2i pos, uint size, std::string_view font, text_align_t align, sf::RenderTarget* ctx);
+	void _draw_rect(vec2u pos, vec2u size, sf::Color color, sf::RenderTarget* ctx);
 	void _draw_counter(int num, text_align_t side, sf::RenderTarget* ctx);
 
 	sf::Font& _font(std::string_view name);
 
 public:
-	ui(VEC2U& client_size);
+	ui(vec2u& client_size);
 
-	void on_draw(UINT ellapsed_time, game_state_t game_state, sf::RenderTarget* ctx);
+	void on_draw(game_state_t game_state, sf::RenderTarget* ctx);
 };

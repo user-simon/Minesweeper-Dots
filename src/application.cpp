@@ -1,6 +1,6 @@
 #include "pch.h"
 
-application::application(VEC2U size, std::string_view window_name)
+application::application(vec2u size, std::string_view window_name)
 {
 	m_client_size = size;
 	m_window_name = window_name;
@@ -24,14 +24,14 @@ void application::exec()
 	}
 }
 
-void application::resize(VEC2U size)
+void application::resize(vec2u size)
 {
 	m_client_size = size;
 	m_ctx->setSize(sf::Vector2u(size.x, size.y));
 	m_ctx->setView(sf::View({ 0, 0, (float)size.x, (float)size.y }));
 }
 
-VEC2U& application::client_size()
+vec2u& application::client_size()
 {
 	return m_client_size;
 }
@@ -58,7 +58,7 @@ void application::_handle_event(sf::Event event)
 		case EVENT::MouseMoved:
 		{
 			if (on_mouse_move && event.mouseMove.x < m_client_size.x && event.mouseMove.y < m_client_size.y)
-				on_mouse_move(VEC2I(event.mouseMove.x, event.mouseMove.y));
+				on_mouse_move(vec2i(event.mouseMove.x, event.mouseMove.y));
 			break;
 		}
 		case EVENT::MouseButtonPressed:

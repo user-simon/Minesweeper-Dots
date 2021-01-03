@@ -3,22 +3,22 @@
 struct difficulty_t
 {
 	// config
-	const UINT id;
+	const uint id;
 	const std::string name;
-	const UINT mines;
-	const VEC2U size;
+	const uint mines;
+	const vec2u size;
 
 	// helper
-	const UINT cell_count;
+	const uint cell_count;
 
 	// statistics
-	int pb;
-	UINT times_played;
-	int average;
+	float pb;
+	uint completions;
+	float avg;
 	
-	difficulty_t(UINT id, std::string name, UINT mines, UINT w, UINT h, UINT pb, UINT times_played, UINT average)
-		: name(name), id(id), mines(mines), size(w, h), cell_count(w * h), pb(pb), times_played(times_played), average(average)  {}
+	difficulty_t(uint id, std::string name, uint mines, uint w, uint h, float pb, uint completions, float avg)
+		: name(name), id(id), mines(mines), size(w, h), cell_count(w * h), pb(pb), completions(completions), avg(avg) {}
 
-	difficulty_t(UINT id, std::string name, UINT mines, UINT w, UINT h)
-		: difficulty_t(id, name, mines, w, h, -1, 0, -1) {}
+	difficulty_t(uint id, std::string name, uint mines, uint w, uint h)
+		: difficulty_t(id, name, mines, w, h, -1.f, 0.f, -1.f) {}
 };
