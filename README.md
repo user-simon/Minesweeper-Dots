@@ -77,8 +77,6 @@ updated config file.
 ## Building
 The project uses C++17 and [SFML](https://www.sfml-dev.org/) for rendering and user input so you'll have to link against that. Because the program is intended to run on multiple platforms, the lib `sfml-main-s` is used to use `main` as an entry-point, as opposed to `WinMain` on Windows, et c.
 
-You also need to include [nlohmann's json library](https://github.com/nlohmann/json) as that is used for serializing/deserializing the difficulty data.
-
 ## Todo
 - [ ] Create a release for Linux
 - [ ] Add functionality for a 10th difficulty by utilizing the `0` key for index 9
@@ -86,4 +84,4 @@ You also need to include [nlohmann's json library](https://github.com/nlohmann/j
 - [ ] Make the window size scale depending on monitor resolution, so the window doesn't go out of bounds
 
 ## Credit
-The font used for the project is [Silkscreen](https://kottke.org/plus/type/silkscreen/index.html).
+The font used for the project is [Silkscreen](https://kottke.org/plus/type/silkscreen/index.html) and [nlohmann](https://github.com/nlohmann)'s [json library](https://github.com/nlohmann/json) is used for data serialization/deserialization.
