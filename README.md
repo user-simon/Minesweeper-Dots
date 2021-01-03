@@ -71,7 +71,7 @@ Simply download and extract the latest release at a location of your choosing an
 
 ## Updating
 Generally, in order to update one simply has to download the latest version and replace the config file to keep existing statistics; in some cases, however, 
-the structure of the config file might be different between different versions, in which case you'd have to transfer the old statistics to the provided,
+the structure of the config file might be different between different versions, in which case you'd have to manually transfer the old statistics to the provided,
 updated config file.
 
 ## Building
