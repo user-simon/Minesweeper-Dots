@@ -1,0 +1,12 @@
+slkscr.ttf
+*.json
+*.sln
+*.vcxproj
+*.filters
+*.user
+/.git
+/.vs
+/Debug
+/Release
+*/Debug
+*/Release
