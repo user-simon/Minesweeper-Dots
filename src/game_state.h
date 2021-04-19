@@ -5,23 +5,23 @@
 
 enum class PHASE
 {
-	READY,
-	STARTED,
-	WON,
-	LOST,
+    READY,
+    STARTED,
+    WON,
+    LOST,
 };
 
 struct game_state
 {
-	PHASE phase;
-	float duration;
+    PHASE phase;
+    float duration;
 
-	// started
-	uint cells_left;
-	int flags_left;
-	sf::Clock clock;
+    // started
+    uint cells_left;
+    int flags_left;
+    sf::Clock clock;
 
-	// won
-	bool beat_pb;
-	bool beat_avg;
+    // won
+    bool beat_pb;
+    bool beat_avg;
 };
