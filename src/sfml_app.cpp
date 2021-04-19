@@ -49,6 +49,7 @@ void sfml_app::_handle_event()
 
             case event::Closed:
             {
+                _on_exit();
                 m_window.close();
                 break;
             }
