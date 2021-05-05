@@ -2,7 +2,7 @@
 #include <vector>
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "vector_n/vector_n.h"
+#include "math_vector/math_vector.h"
 
 struct cell
 {
@@ -31,5 +31,5 @@ struct cell
     // cell::open for return value
     int open_neighbours();
 
-    void on_draw(PHASE game_phase, bool hovered, sf::RenderTarget& ctx);
+    void on_draw(PHASE game_phase, bool hovered, sf::RenderTarget& ctx) const;
 };

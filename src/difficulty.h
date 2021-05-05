@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#include "vector_n/vector_n.h"
+#include "math_vector/math_vector.h"
 
 struct difficulty
 {

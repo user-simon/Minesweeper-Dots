@@ -3,7 +3,7 @@
 
 using namespace design::ui;
 
-ui::ui(uint2d& client_size) : m_client_size(client_size)
+ui::ui(const uint2d& client_size) : m_client_size(client_size)
 {
     
 }
@@ -97,7 +97,7 @@ sf::Font& ui::_font(const std::string& name)
 
 void ui::on_draw(const game_state& game_state, sf::RenderTarget& ctx)
 {
-    _draw_rect(uint2d::ZERO, uint2d(m_client_size.x, PANEL_HEIGHT), colors::BODY, ctx);
+    _draw_rect(uint2d::zero, uint2d(m_client_size.x, PANEL_HEIGHT), colors::BODY, ctx);
     _draw_counter(game_state.flags_left, ALIGN_LEFT, ctx);
     _draw_counter(game_state.duration, ALIGN_RIGHT, ctx);
 
@@ -105,7 +105,7 @@ void ui::on_draw(const game_state& game_state, sf::RenderTarget& ctx)
     {
         sf::Color color = colors::BODY;
         color.a = 128;
-        _draw_rect(uint2d::ZERO, m_client_size, color, ctx);
+        _draw_rect(uint2d::zero, m_client_size, color, ctx);
 
         uint2d time_pos = m_client_size * 0.5 - uint2d(0, SCORE_SIZE / 2);
 

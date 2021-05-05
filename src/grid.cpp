@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "grid.h"
 
-void grid::init(uint2d size)
+void grid::init(const uint2d& size)
 {
     m_size = size;
 
@@ -14,13 +14,13 @@ void grid::init(uint2d size)
     {
         for (uint x = 0; x < size.x; x++)
         {
-            m_cells.push_back(std::make_unique<cell>(uint2d(x, y)));
+            m_cells.emplace_back(uint2d(x, y));
         }
     }
     
     // set neighbours
 
-    for (std::unique_ptr<cell>& c : m_cells)
+    for (cell& c : m_cells)
     {
         for (int dx = -1; dx <= 1; dx++)
         {
@@ -31,32 +31,34 @@ void grid::init(uint2d size)
                 if (!dpos)
                     continue;
 
-                const uint2d npos = c->pos + dpos;
+                const uint2d npos = c.pos + dpos;
 
                 if (npos.x >= m_size.x || npos.y >= m_size.y)
                     continue;
 
-                c->neighbours.push_back(get_cell(npos));
+                c.neighbours.push_back(get_cell(npos));
             }
         }
         // some cells will have over-allocated memory for neighbours
-        c->neighbours.shrink_to_fit();
+        c.neighbours.shrink_to_fit();
     }
 }
 
 void grid::reset()
 {
-    for (std::unique_ptr<cell>& c : m_cells)
-        c->init();
+    for (cell& c : m_cells)
+        c.init();
 }
 
-void grid::populate(uint mines, uint2d around)
+void grid::populate(uint mines, const uint2d& around)
 {
     for (uint i = 0; i < mines; i++)
     {
-        uint2d cand_pos = uint2d::ZERO;
+        uint2d cand_pos = uint2d::zero;
         cell* cand_cell = nullptr;
 
+        // don't place mines around the first cell clicked
+        // or on cells that already have mines
         do
         {
             cand_pos  = get_random_pos(m_size);
@@ -75,13 +77,13 @@ void grid::populate(uint mines, uint2d around)
     }
 }
 
-void grid::on_draw(PHASE game_phase, cell* hovered_cell, sf::RenderTarget& ctx)
+void grid::on_draw(PHASE game_phase, cell* hovered_cell, sf::RenderTarget& ctx) const
 {
-    for (std::unique_ptr<cell>& c : m_cells)
-        c->on_draw(game_phase, c.get() == hovered_cell, ctx);
+    for (const cell& c : m_cells)
+        c.on_draw(game_phase, &c == hovered_cell, ctx);
 }
 
-cell* grid::get_cell(uint2d pos)
+cell* grid::get_cell(const uint2d& pos)
 {
-    return m_cells[pos.x + m_size.x * pos.y].get();
+    return &m_cells[pos.x + m_size.x * pos.y];
 }

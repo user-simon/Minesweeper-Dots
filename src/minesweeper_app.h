@@ -2,7 +2,7 @@
 #include <vector>
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "vector_n/vector_n.h"
+#include "math_vector/math_vector.h"
 
 #include "sfml_app.h"
 #include "grid.h"
@@ -27,11 +27,11 @@ private:
     void _end();
     void _reset();
 
-    void _on_draw(sf::RenderTarget& ctx) override;
-    void _on_key_down(uint key) override;
-    void _on_mouse_down(uint button) override;
-    void _on_mouse_move(uint2d pos) override;
-    void _on_exit() override;
+    void on_draw(sf::RenderTarget& ctx)   override;
+    void on_key_down(uint key)            override;
+    void on_mouse_down(uint button)       override;
+    void on_mouse_move(const uint2d& pos) override;
+    void on_exit() override;
 
     void _macro();
     void _toggle_flag();

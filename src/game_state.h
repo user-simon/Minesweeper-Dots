@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/System/Clock.hpp>
 
-#include "vector_n/vector_n.h"
+#include "math_vector/math_vector.h"
 
 enum class PHASE
 {

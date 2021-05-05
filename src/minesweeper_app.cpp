@@ -2,8 +2,7 @@
 #include "minesweeper_app.h"
 using json = nlohmann::json;
 
-minesweeper_app::minesweeper_app()
-    : sfml_app("Dots", uint2d::ZERO, sf::Color::Black), m_ui(m_client_size)
+minesweeper_app::minesweeper_app() : m_ui(client_size())
 {
     // deserialize config data from file
     
@@ -41,12 +40,12 @@ minesweeper_app::minesweeper_app()
         throw std::runtime_error("Couldn't read config data from file");
     }
 
-    // create helper classes
-
+    // init window
+    
     const uint2d window_size = m_difficulty->size * design::cells::SIZE + uint2d(0, design::ui::PANEL_HEIGHT);
-
-    resize(window_size);
-
+    
+    init("Dots", window_size, sf::Color::Black);
+    
     // init grid
 
     m_grid.init(m_difficulty->size);
@@ -103,7 +102,7 @@ void minesweeper_app::_reset()
     m_grid.reset();
 }
 
-void minesweeper_app::_on_draw(sf::RenderTarget& ctx)
+void minesweeper_app::on_draw(sf::RenderTarget& ctx)
 {
     // update duration only while the game is running
     if (m_state.phase == PHASE::STARTED)
@@ -114,7 +113,7 @@ void minesweeper_app::_on_draw(sf::RenderTarget& ctx)
     m_ui.on_draw(m_state, ctx);
 }
 
-void minesweeper_app::_on_key_down(uint key)
+void minesweeper_app::on_key_down(uint key)
 {
     switch (key)
     {
@@ -151,7 +150,7 @@ void minesweeper_app::_on_key_down(uint key)
     }
 }
 
-void minesweeper_app::_on_mouse_down(uint button)
+void minesweeper_app::on_mouse_down(uint button)
 {
     if (m_state.phase > PHASE::STARTED)
     {
@@ -196,20 +195,18 @@ void minesweeper_app::_on_mouse_down(uint button)
     }
 }
 
-void minesweeper_app::_on_mouse_move(uint2d pos)
+void minesweeper_app::on_mouse_move(const uint2d& pos)
 {
     if (pos.y < design::ui::PANEL_HEIGHT)
     {
         m_hovered_cell = nullptr;
         return;
     }
-    pos.y -= design::ui::PANEL_HEIGHT;
-    pos /= design::cells::SIZE;
-
-    m_hovered_cell = m_grid.get_cell(pos);
+    uint2d cell_pos = (pos - uint2d(0, design::ui::PANEL_HEIGHT)) / design::cells::SIZE;
+    m_hovered_cell = m_grid.get_cell(cell_pos);
 }
 
-void minesweeper_app::_on_exit()
+void minesweeper_app::on_exit()
 {
     // serialize data to file
 

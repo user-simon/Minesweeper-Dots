@@ -69,7 +69,7 @@ int cell::open_neighbours()
     return opened_cells;
 }
 
-void cell::on_draw(PHASE game_phase, bool hovered, sf::RenderTarget& ctx)
+void cell::on_draw(PHASE game_phase, bool hovered, sf::RenderTarget& ctx) const
 {
     using namespace design::cells;
 

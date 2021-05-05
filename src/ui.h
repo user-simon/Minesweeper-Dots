@@ -3,7 +3,7 @@
 #include <string_view>
 
 #include <SFML/Graphics.hpp>
-#include "vector_n/vector_n.h"
+#include "math_vector/math_vector.h"
 
 #include "game_state.h"
 
@@ -17,7 +17,7 @@ enum TEXT_ALIGN
 class ui
 {
 private:
-    uint2d& m_client_size;
+    const uint2d& m_client_size;
     std::unordered_map<std::string_view, sf::Font> m_fonts;
 
 private:
@@ -30,7 +30,7 @@ private:
     sf::Font& _font(const std::string& name);
 
 public:
-    ui(uint2d& client_size);
+    ui(const uint2d& client_size);
 
     void on_draw(const game_state& game_state, sf::RenderTarget& ctx);
 };

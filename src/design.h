@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics/Color.hpp>
-#include "vector_n/vector_n.h"
+#include "math_vector/math_vector.h"
 
 #define COLOR(r,g,b) sf::Color(r * 255, g * 255, b * 255)
 

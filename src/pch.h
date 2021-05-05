@@ -7,7 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "vector_n/vector_n.h"
+#include "math_vector/math_vector.h"
 #include "json/include/nlohmann/json.hpp"
 
 #include "design.h"
